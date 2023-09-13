@@ -1,16 +1,9 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[2]:
-
-
-#
-# This is a sample Notebook to demonstrate how to read "MNIST Dataset"
-#
 import numpy as np # linear algebra
 import struct
 from array import array
 from os.path  import join
+#import random
+#import matplotlib.pyplot as plt
 
 #
 # MNIST Data Loader Class
@@ -24,12 +17,12 @@ class MnistDataloader(object):
         self.test_labels_filepath = test_labels_filepath
     
     def read_images_labels(self, images_filepath, labels_filepath):        
-        labels = []
+        #labels = []
         with open(labels_filepath, 'rb') as file:
             magic, size = struct.unpack(">II", file.read(8))
             if magic != 2049:
                 raise ValueError('Magic number mismatch, expected 2049, got {}'.format(magic))
-            labels = array("B", file.read())        
+            labels = np.array(array("B", file.read()))        
         
         with open(images_filepath, 'rb') as file:
             magic, size, rows, cols = struct.unpack(">IIII", file.read(16))
@@ -44,29 +37,17 @@ class MnistDataloader(object):
             img = img.reshape(28, 28)
             images[i][:] = img            
         
-        return images, labels
+        return np.array(images), labels
             
     def load_data(self):
         x_train, y_train = self.read_images_labels(self.training_images_filepath, self.training_labels_filepath)
         x_test, y_test = self.read_images_labels(self.test_images_filepath, self.test_labels_filepath)
-        return (x_train, y_train),(x_test, y_test)        
-
-
-
-# In[4]:
-
-
-#
-# Verify Reading Dataset via MnistDataloader class
-#
-# get_ipython().run_line_magic('matplotlib', 'inline')
-import random
-import matplotlib.pyplot as plt
-
+        return (x_train, y_train),(x_test, y_test)
+    
 #
 # Set file paths based on added MNIST Datasets
 #
-input_path = 'C:/Users/ravih/OneDrive/Desktop/Sem 5/Computer Vision/Assignment-1/MNIST/'
+input_path = 'C:/Users/ravih/OneDrive/Desktop/DL Project/MNIST'
 training_images_filepath = join(input_path,'train-images.idx3-ubyte')
 training_labels_filepath = join(input_path,'train-labels.idx1-ubyte')
 test_images_filepath = join(input_path,'t10k-images.idx3-ubyte')
@@ -75,19 +56,19 @@ test_labels_filepath = join(input_path,'t10k-labels.idx1-ubyte')
 #
 # Helper function to show a list of images with their relating titles
 #
-def show_images(images, title_texts):
-    cols = 5
-    rows = int(len(images)/cols) + 1
-    plt.figure(figsize=(30,20))
-    index = 1    
-    for x in zip(images, title_texts):        
-        image = x[0]        
-        title_text = x[1]
-        plt.subplot(rows, cols, index)        
-        plt.imshow(image, cmap=plt.cm.gray)
-        if (title_text != ''):
-            plt.title(title_text, fontsize = 15);        
-        index += 1
+# def show_images(images, title_texts):
+#     cols = 5
+#     rows = int(len(images)/cols) + 1
+#     plt.figure(figsize=(30,20))
+#     index = 1    
+#     for x in zip(images, title_texts):        
+#         image = x[0]        
+#         title_text = x[1]
+#         plt.subplot(rows, cols, index)        
+#         plt.imshow(image, cmap=plt.cm.gray)
+#         if (title_text != ''):
+#             plt.title(title_text, fontsize = 15);        
+#         index += 1
 
 #
 # Load MINST dataset
@@ -111,10 +92,3 @@ mnist_dataloader = MnistDataloader(training_images_filepath, training_labels_fil
 #     titles_2_show.append('test image [' + str(r) + '] = ' + str(y_test[r]))    
 
 # show_images(images_2_show, titles_2_show)
-
-
-# In[ ]:
-
-
-
-
